@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>  Мұғалімнің журналы - Кемал С. | КМ03</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loginScreen" class="screen active">
+        <div class="login-box">
+            <section class="login-visual">
+                <img class="college-logo" src="https://aqtk.edu.kz/static/img/logo.ico" alt="Ақтөбе құрылыс-техникалық колледжінің логотипі" data-i18n-alt="collegeLogoAlt">
+                <span class="login-brand-kicker" data-i18n="collegeSystem">COLLEGE SYSTEM</span>
+                <h1 data-i18n="loginTitle">Электронды журнал</h1>
+                <p data-i18n="loginTagline">Білім - болашақтың кілті</p>
+                <div class="login-motto" data-i18n="loginMotto">«Сапалы білім -<br>жарқын болашақ!»</div>
+            </section>
+            <section class="login-panel">
+                <div class="login-panel-heading"><span class="login-panel-kicker" data-i18n="eJournal">E-JOURNAL</span><label class="language-switcher login-language-inline"><span class="language-globe">◎</span><select id="languageSelect" onchange="setLanguage(this.value)" aria-label="Тіл" data-i18n-aria-label="Тіл"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></label></div>
+                <h2 data-i18n="loginHeading">Жүйеге кіру</h2>
+                <p class="login-panel-subtitle" data-i18n="loginInstruction">Өзіңіздің логин және құпиясөз арқылы кіріңіз</p>
+                <div class="login-field"><span></span><input type="text" id="login" placeholder="Логин" value="kemal"></div>
+                <div class="login-field"><span></span><input type="password" id="password" placeholder="Құпиясөз" value="123456"><button type="button" class="password-toggle" onclick="togglePasswordVisibility()" aria-label="Құпиясөзді көрсету" data-i18n-aria-label="Құпиясөзді көрсету">◉</button></div>
+                <button class="login-submit" data-i18n="loginButton" onclick="login()">Кіру</button>
+                <div class="role-quick-actions" aria-label="Рөлді таңдау" data-i18n-aria-label="Рөлді таңдау">
+                    <button type="button" class="role-quick" onclick="selectLoginRole('admin')"><span></span><small data-i18n="roleAdmin">Админ</small></button>
+                    <button type="button" class="role-quick active" onclick="selectLoginRole('teacher')"><span></span><small data-i18n="roleTeacher">Оқытушы</small></button>
+                    <button type="button" class="role-quick" onclick="selectLoginRole('student')"><span></span><small data-i18n="roleStudent">Оқушы</small></button>
+                </div>
+                <div class="login-info">
+                    <strong data-i18n="credentialsTitle">Кіруге арналған деректер</strong>
+                    <div><span data-i18n="roleAdminFull">Әкімші</span><b>admin / admin123</b></div>
+                    <div><span data-i18n="roleTeacherFull">Оқытушы</span><b>kemal / 123456</b></div>
+                    <div><span data-i18n="roleStudentFull">Оқушы</span><b>201 / 201</b></div>
+                </div>
+                <button data-i18n="registerButton" class="registration-trigger" onclick="toggleStudentRegistration()">Оқушыны тіркеу</button>
+                <form id="studentRegistrationForm" class="student-registration-form" onsubmit="event.preventDefault(); registerStudent();" hidden>
+                    <div class="registration-heading"><strong data-i18n="registrationHeading">Оқушыны тіркеу</strong><span data-i18n="registrationInstruction">Жеке кабинетке кіру үшін деректерді толтырыңыз</span></div>
+                    <input id="registrationIin" type="text" inputmode="numeric" maxlength="12" placeholder="ЖСН (12 сан)" required>
+                    <select id="registrationCollege" required>
+                        <option value="" data-i18n="collegePrompt">Колледжді таңдаңыз</option>
+                        <option value="Ақтөбе құрылыс-техникалық колледжі" data-i18n="collegeConstruction">Ақтөбе құрылыс-техникалық колледжі</option>
+                        <option value="Ақтөбе гуманитарлық колледжі" data-i18n="collegeHumanities">Ақтөбе гуманитарлық колледжі</option>
+                        <option value="Мұнай-газ колледжі" data-i18n="collegeOilGas">Мұнай-газ колледжі</option>
+                    </select>
+                    <select id="registrationGroup" required><option value="" data-i18n="groupPrompt">Топты таңдаңыз</option></select>
+                    <input id="registrationLogin" type="text" minlength="3" maxlength="30" placeholder="Өз логиніңіз" required>
+                    <input id="registrationPassword" type="password" minlength="6" maxlength="50" placeholder="Өз құпиясөзіңіз (кемінде 6 таңба)" required>
+                    <div class="registration-actions"><button type="submit" data-i18n="registrationSubmit">Тіркелу</button><button type="button" class="registration-cancel" onclick="toggleStudentRegistration(false)" data-i18n="registrationCancel">Бас тарту</button></div>
+                    <div id="registrationResult" class="registration-result" aria-live="polite"></div>
+                </form>
+            </section>
+        </div> 
+    </div>
+
+    <div id="scheduleScreen" class="screen">
+        <div class="header">
+            <h1> Бағалау журналы</h1>
+            <div class="header-right">
+                <div class="teacher-profile"><span class="teacher-avatar">К</span><strong id="userName">Кемал С.</strong></div>
+                <label class="global-language-control teacher-language-control"><span class="language-globe">◎</span><select id="teacherLanguageSelect" onchange="setLanguage(this.value)" aria-label="Тіл"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></label>
+                <button onclick="logout()" class="logout-btn">Шығу</button>
+            </div>
+        </div>
+        <div class="schedule-container">
+            <div class="schedule-grid" id="scheduleGrid"></div>
+        </div>
+    </div>
+
+    <div id="studentAccessScreen" class="screen student-access-screen">
+        <div class="student-access-shell">
+            <div class="student-access-topbar"><strong>Электронды журнал</strong><button onclick="logout()" class="logout-btn">Шығу</button></div>
+            <div id="studentAccessView"></div>
+        </div>
+    </div>
+
+    <div id="adminScreen" class="screen admin-screen">
+        <div class="admin-shell">
+            <aside class="admin-sidebar">
+                <div class="admin-brand"><span class="brand-mark">К</span><div><strong data-i18n="adminManagement">Басқару</strong><small data-i18n="teacherJournal">Мұғалім журналы</small></div></div>
+                <nav class="admin-nav" aria-label="Әкімші бөлімдері" data-i18n-aria-label="Әкімші бөлімдері">
+                    <button class="admin-nav-item active" data-admin-view="overview" onclick="switchAdminView('overview')" data-i18n="teachers">Оқытушылар</button>
+                    <button class="admin-nav-item" data-admin-view="content" onclick="switchAdminView('content')" data-i18n="groupsStudents">Топтар мен студенттер</button>
+                    <button class="admin-nav-item" data-admin-view="schedule" onclick="switchAdminView('schedule')" data-i18n="schedule">Расписание</button>
+                    <button class="admin-nav-item" data-admin-view="users" onclick="switchAdminView('users')" data-i18n="users">Пайдаланушылар</button>
+                    <button class="admin-nav-item" data-admin-view="settings" onclick="switchAdminView('settings')" data-i18n="settings">Баптаулар</button>
+                    <button class="admin-nav-item" data-admin-view="activity" onclick="switchAdminView('activity')" data-i18n="activityLog">Әрекеттер журналы</button>
+                </nav>
+                <button class="admin-logout" onclick="logout()" data-i18n="logout">Шығу</button>
+            </aside>
+            <main class="admin-content">
+                <header class="admin-topbar"><div class="institution-heading"><div data-i18n="institution">Ақтөбе құрылыс-техникалық колледжі</div><div><strong data-i18n="teacherLabel">Оқытушы:</strong> Серік Кемал <span class="heading-divider">|</span> <a href="#" data-i18n="journalSystem">Электронды журнал жүйесі</a></div><h1 id="adminViewTitle">Оқытушыларға арналған аккаунттарды басқару (Серік Кемал панелі)</h1></div><div class="admin-profile"><span class="profile-avatar">K</span><div><strong>Kemal C.</strong><small data-i18n="teacher">Оқытушы</small></div><span class="profile-bell">♧</span></div><label class="global-language-control admin-language-control"><span class="language-globe">◎</span><select id="adminLanguageSelect" onchange="setLanguage(this.value)" aria-label="Тіл"><option value="kk">Қазақша</option><option value="ru">Русский</option><option value="en">English</option></select></label></header>
+                <div id="adminView" class="admin-view"></div>
+            </main>
+        </div>
+    </div>
+
+    <div id="journalScreen" class="screen">
+    <div class="header">
+        <div class="header-left">
+            <button onclick="goBack()" class="back-btn">← Журналға қайту</button>
+        </div>
+        
+        <h1 id="journalTitle">Топ журналы</h1>
+        
+        <div class="header-right">
+            <button class="export-btn" onclick="exportExcel()"> Excel-ге жүктеу</button>
+        </div>
+    </div>
+
+        <div class="journal-main">
+            <div class="journal-left">
+                <div id="currentGroupInfo" class="group-info-card"></div>
+                <div class="calendar-section">
+                    <h3>  Күн таңдау</h3>
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <button onclick="prevMonth()" class="nav-btn">‹</button>
+                            <div id="monthYear"></div>
+                            <button onclick="nextMonth()" class="nav-btn">›</button>
+                        </div>
+                        <div class="calendar-grid" id="calendarDays"></div>
+                    </div>
+                    <div id="selectedDateDisplay" class="date-info"></div>
+                    <input type="hidden" id="selectedDate">
+                </div>
+            </div>
+
+            <div class="journal-right">
+                <div class="students-section">
+                    <h3>Студенттер тізімі</h3>
+                    
+                    <div class="students-controls" style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="studentSearch" placeholder="Оқушыны іздеу..." oninput="filterStudents()">
+                        <button onclick="addNewStudent()" class="add-btn">+ Студенттерді қосу</button>
+                    </div>
+
+                    <div class="students-table">
+                        <table>
+                            <thead>
+                                <tr><th>#</th><th>Студент аты</th><th>Баға/Қатысу</th><th>Ескертпе</th></tr>
+                            </thead>
+                            <tbody id="studentsTable"></tbody>
+                        </table>
+                        <button onclick="saveJournal()" class="save-btn"> Журналды сақтау</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="lessonModal" class="lesson-modal" aria-hidden="true">
+        <div class="lesson-modal-backdrop" onclick="closeLessonModal()"></div>
+        <section class="lesson-modal-card" role="dialog" aria-modal="true" aria-labelledby="lessonModalTitle">
+            <button class="modal-close" onclick="closeLessonModal()" aria-label="Закрыть">×</button>
+            <div id="lessonModalContent"></div>
+        </section>
+    </div>
+
+    <script type="module" src="script.js?v=20260919"></script>
+</html>
